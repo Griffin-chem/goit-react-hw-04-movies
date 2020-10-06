@@ -52,7 +52,7 @@ const searchMovieByRequest = (request) => {
     .catch(() => {
       return "err";
     });
-}
+};
 
 const getCastByID = (id) => {
   return fetch(
@@ -70,6 +70,29 @@ const getCastByID = (id) => {
     .catch(() => {
       return "err";
     });
-}
+};
 
-export { getTrending, getMovieDetails, searchMovieByRequest, getCastByID };
+const getReveiwsByID = (id) => {
+  return fetch(
+    ` https://api.themoviedb.org/3/movie/${id}/reviews?api_key=${KEY}&language=en-US&page=1`,
+    {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+      },
+    }
+  )
+    .then((response) => {
+      return response.json();
+    })
+    .catch(() => {
+      return "err";
+    });
+};
+export {
+  getTrending,
+  getMovieDetails,
+  searchMovieByRequest,
+  getCastByID,
+  getReveiwsByID,
+};

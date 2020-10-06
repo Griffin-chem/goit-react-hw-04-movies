@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 
 import { getTrending } from "../../service/API";
+
+import { MainListCSS, ListItemCSS, LinkCSS } from "./styledHomePage";
 
 class TrendingList extends Component {
   state = {
@@ -23,18 +24,24 @@ class TrendingList extends Component {
 
   render() {
     const { results } = this.state;
+    const { location } = this.props;
     console.log(results);
 
     return (
-      <ul>
+      <MainListCSS>
         {results.map(({ id, title }) => (
-          <li key={id}>
-            <Link to={`/movies/${id}`}>
+          <ListItemCSS key={id}>
+            <LinkCSS
+              to={{
+                pathname: `/movies/${id}`,
+                state: { from: location },
+              }}
+            >
               {title}
-            </Link>
-          </li>
+            </LinkCSS>
+          </ListItemCSS>
         ))}
-      </ul>
+      </MainListCSS>
     );
   }
 }

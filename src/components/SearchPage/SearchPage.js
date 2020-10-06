@@ -1,7 +1,14 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 
 import { searchMovieByRequest } from "../../service/API";
+
+import {
+  ListCSS,
+  ListItemCSS,
+  LinkCSS,
+  SearchFieldCSS,
+  SearchButtonCSS,
+} from "./styledSearchPage";
 
 const INITIAL_STATE = {
   query: "",
@@ -52,16 +59,21 @@ class SearchPage extends Component {
     return (
       <div>
         <form onSubmit={this.handleSubmit}>
-          <input type="text" onChange={this.handleInput} value={query} />
-          <input type="submit" value="Search" />
+          <SearchFieldCSS
+            type="text"
+            onChange={this.handleInput}
+            value={query}
+            placeholder="Input movie to search..."
+          />
+          <SearchButtonCSS type="submit" value="Search" />
         </form>
-        <ul>
+        <ListCSS>
           {results.map(({ id, title }) => (
-            <li key={id}>
-              <Link to={`/movies/${id}`}>{title}</Link>
-            </li>
+            <ListItemCSS key={id}>
+              <LinkCSS to={`/movies/${id}`}>{title}</LinkCSS>
+            </ListItemCSS>
           ))}
-        </ul>
+        </ListCSS>
       </div>
     );
   }

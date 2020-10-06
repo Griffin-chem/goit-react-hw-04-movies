@@ -2,15 +2,23 @@ import React, { Component } from "react";
 
 import { getCastByID } from "../../../service/API";
 
+import {
+  CastListCSS,
+  ListItemCSS,
+  ActorCSS,
+  CharCSS,
+  CastImageCSS,
+} from "./styledCast";
+
 class Cast extends Component {
   state = {
     results: [],
   };
 
   getCastData = async () => {
-    const { id } = this.props;
+    const { id } = this.props.match.params;
+    console.log(this.props);
     const data = await getCastByID(id);
-    console.log(data.cast);
     this.setState({ results: data.cast });
   };
 
@@ -22,18 +30,18 @@ class Cast extends Component {
     const { results } = this.state;
 
     return (
-      <ul>
+      <CastListCSS>
         {results.map(({ character, name, profile_path, cast_id }) => (
-          <li key={cast_id}>
-            <img
+          <ListItemCSS key={cast_id}>
+            <CastImageCSS
               src={`https://image.tmdb.org/t/p/w500/${profile_path}`}
               alt="Not Available"
             />
-            <p>{name}</p>
-            <p>{`Character: ${character}`}</p>
-          </li>
+            <ActorCSS>{name}</ActorCSS>
+            <CharCSS>{`Character: ${character}`}</CharCSS>
+          </ListItemCSS>
         ))}
-      </ul>
+      </CastListCSS>
     );
   }
 }

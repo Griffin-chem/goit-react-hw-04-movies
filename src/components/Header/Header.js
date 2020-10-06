@@ -1,15 +1,14 @@
 import React from "react";
-import { Link } from "react-router-dom";
 
-import { HeaderCSS, HeaderItemCSS } from './slyledHeader';
+import { HeaderCSS, HeaderItemCSS, LinkCSS } from './slyledHeader';
 
 const Header = () => (
   <HeaderCSS>
     <HeaderItemCSS>
-      <Link to="/">Home</Link>
+      <LinkCSS to="/">Home</LinkCSS>
     </HeaderItemCSS>
     <HeaderItemCSS>
-      <Link to="/movies">Movies</Link>
+      <LinkCSS to="/movies">Movies</LinkCSS>
     </HeaderItemCSS>
   </HeaderCSS>
 );
