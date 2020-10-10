@@ -1,10 +1,7 @@
-import React, { Component } from "react";
-import { Route, Switch } from "react-router-dom";
+import React, { Component, Suspense, lazy } from "react";
+import { Route } from "react-router-dom";
 
 import { getMovieDetails } from "../../service/API";
-
-import { Cast } from "./Cast/Cast";
-import { Reviews } from "./Review/Reviews";
 
 import {
   PosterCSS,
@@ -19,6 +16,15 @@ import {
   AddBlockCSS,
   LinkCSS,
 } from "./styledDetailsPage";
+
+import { ButtonBack } from "../ButtonBack/ButtonBack";
+
+const AsyncCast = lazy(() =>
+  import("./Cast/Cast" /* webpackChankName: "cast" */)
+);
+const AsyncReviews = lazy(() =>
+  import("./Review/Reviews" /* webpackChankName: "reviews" */)
+);
 
 export default class DetailsPage extends Component {
   state = {
@@ -37,9 +43,20 @@ export default class DetailsPage extends Component {
     console.log(this.props);
   };
 
+  handleGoBack = () => {
+    const { state } = this.props.location;
+  
+    if (state) {
+      this.props.history.push(state.from);
+      return;
+    }
+  
+    this.props.history.push({
+      pathname: '/',
+    });
+  };
   render() {
     const {
-      id,
       poster_path: imageURL,
       title,
       release_date: release,
@@ -49,9 +66,11 @@ export default class DetailsPage extends Component {
     } = this.state.movieData;
 
     const { url, path } = this.props.match;
-
+    const { state } = this.props.location;
+    console.log(state);
     return (
       <div>
+        <ButtonBack handleClick={this.handleGoBack} />
         {title ? (
           <DetailsBlockCSS>
             <PosterCSS
@@ -79,16 +98,15 @@ export default class DetailsPage extends Component {
         )}
         <AddBlockCSS>
           <SubcaptionCSS>Additional Information</SubcaptionCSS>
-          <LinkCSS to={`${url}/cast`}>Cast</LinkCSS>
-          <LinkCSS to={`${url}/reviews`}>Reviews</LinkCSS>
+          <LinkCSS to={{ pathname: `${url}/cast`, state: state }}>Cast</LinkCSS>
+          <LinkCSS to={{ pathname: `${url}/reviews`, state: state }}>
+            Reviews
+          </LinkCSS>
         </AddBlockCSS>
-        <Switch>
-          <Route path={`${path}/cast`} component={Cast} />
-          <Route
-            path={`${path}/reviews`}
-            render={() => <Reviews id={id} />}
-          />
-        </Switch>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Route path={`${path}/cast`} component={AsyncCast} />
+          <Route path={`${path}/reviews`} component={AsyncReviews} />
+        </Suspense>
       </div>
     );
   }

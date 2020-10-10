@@ -2,22 +2,31 @@ import React, { Component } from "react";
 
 import { getReveiwsByID } from "../../../service/API";
 
-import { ReviewsListCSS, ListItemCSS, AuthorCSS, ReviewCSS } from './styledReview';
+import {
+  ReviewsListCSS,
+  ListItemCSS,
+  AuthorCSS,
+  ReviewCSS,
+} from "./styledReview";
 
-class Reviews extends Component {
+export default class Reviews extends Component {
   state = {
     results: [],
+    err: false
   };
 
-  getReviewData = async () => {
-    const { id } = this.props;
-    const data = await getReveiwsByID(id);
-    console.log(data.results);
-    this.setState({ results: data.results });
+  getReviewData = async (id) => {
+    try {
+      const data = await getReveiwsByID(id);
+      this.setState({ results: data.results });
+    } catch {
+      this.setState({ err: true });
+    }
   };
 
   componentDidMount = () => {
-    this.getReviewData();
+    const { id } = this.props.match.params;
+    this.getReviewData(id);
   };
 
   render() {
@@ -41,5 +50,3 @@ class Reviews extends Component {
     );
   }
 }
-
-export { Reviews };

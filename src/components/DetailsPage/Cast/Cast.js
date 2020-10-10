@@ -10,25 +10,25 @@ import {
   CastImageCSS,
 } from "./styledCast";
 
-class Cast extends Component {
+export default class Cast extends Component {
   state = {
     results: [],
   };
 
-  getCastData = async () => {
-    const { id } = this.props.match.params;
-    console.log(this.props);
-    const data = await getCastByID(id);
-    this.setState({ results: data.cast });
+  getCastData = async (id) => {
+    try { const data = await getCastByID(id) 
+    this.setState({ results: [...data.cast] })}
+    catch {console.log("Error!")};
   };
 
   componentDidMount = () => {
-    this.getCastData();
+    const { id } = this.props.match.params;
+    this.getCastData(id);
   };
 
   render() {
     const { results } = this.state;
-
+    console.log(this.props);
     return (
       <CastListCSS>
         {results.map(({ character, name, profile_path, cast_id }) => (
@@ -45,5 +45,3 @@ class Cast extends Component {
     );
   }
 }
-
-export { Cast };

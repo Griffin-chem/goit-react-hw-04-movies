@@ -25,7 +25,7 @@ class TrendingList extends Component {
   render() {
     const { results } = this.state;
     const { location } = this.props;
-    console.log(results);
+    console.log("location: ", location);
 
     return (
       <MainListCSS>

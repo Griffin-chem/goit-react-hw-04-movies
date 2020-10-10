@@ -56,6 +56,7 @@ class SearchPage extends Component {
 
   render() {
     const { query, results } = this.state;
+    const { location } = this.props;
     return (
       <div>
         <form onSubmit={this.handleSubmit}>
@@ -70,7 +71,14 @@ class SearchPage extends Component {
         <ListCSS>
           {results.map(({ id, title }) => (
             <ListItemCSS key={id}>
-              <LinkCSS to={`/movies/${id}`}>{title}</LinkCSS>
+              <LinkCSS
+                to={{
+                  pathname: `/movies/${id}`,
+                  state: { from: location },
+                }}
+              >
+                {title}
+              </LinkCSS>
             </ListItemCSS>
           ))}
         </ListCSS>

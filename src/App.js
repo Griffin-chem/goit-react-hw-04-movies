@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from "react";
-import { Route, Switch } from "react-router-dom";
+import { Redirect, Route, Switch } from "react-router-dom";
 
 import { Header } from "./components/Header/Header";
 import { TrendingList } from "./components/HomePage/HomePage";
@@ -13,6 +13,7 @@ const App = () => (
       <Route exact path="/" component={TrendingList} />
       <Route exact path="/movies" component={SearchPage} />
       <Route path="/movies/:id" component={DetailsPage} />
+      <Redirect to="/" />
     </Switch>
   </div>
 );
