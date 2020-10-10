@@ -1,10 +1,10 @@
-import React, { lazy, Suspense } from "react";
+import React from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 
 import { Header } from "./components/Header/Header";
 import { TrendingList } from "./components/HomePage/HomePage";
 import { SearchPage } from "./components/SearchPage/SearchPage";
-import DetailsPage from './components/DetailsPage/DetailsPage';
+import DetailsPage from "./components/DetailsPage/DetailsPage";
 
 const App = () => (
   <div>

@@ -12,16 +12,13 @@ import {
 export default class Reviews extends Component {
   state = {
     results: [],
-    err: false
   };
 
   getReviewData = async (id) => {
     try {
       const data = await getReveiwsByID(id);
       this.setState({ results: data.results });
-    } catch {
-      this.setState({ err: true });
-    }
+    } catch {}
   };
 
   componentDidMount = () => {

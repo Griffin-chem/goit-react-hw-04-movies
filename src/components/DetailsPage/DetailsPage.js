@@ -3,21 +3,10 @@ import { Route } from "react-router-dom";
 
 import { getMovieDetails } from "../../service/API";
 
-import {
-  PosterCSS,
-  InfoBlockCSS,
-  DetailsBlockCSS,
-  MovieTitleCSS,
-  ScoreCSS,
-  SubcaptionCSS,
-  OverviewCSS,
-  GenresListCSS,
-  ListItemCSS,
-  AddBlockCSS,
-  LinkCSS,
-} from "./styledDetailsPage";
-
 import { ButtonBack } from "../ButtonBack/ButtonBack";
+import { ErrPage } from "../ErrPage/ErrPage";
+import Loading from "../Loading/Loading";
+import AddBlock from "./AddInfoMarkup";
 
 const AsyncCast = lazy(() =>
   import("./Cast/Cast" /* webpackChankName: "cast" */)
@@ -25,88 +14,75 @@ const AsyncCast = lazy(() =>
 const AsyncReviews = lazy(() =>
   import("./Review/Reviews" /* webpackChankName: "reviews" */)
 );
+const DetailsPageMarkup = lazy(() =>
+  import("./DetailPageMarkup" /* webpackChankName: "details" */)
+);
 
 export default class DetailsPage extends Component {
   state = {
     movieData: {},
+    loading: false,
+    err: false,
   };
 
   getDetails = async (id) => {
-    const movieData = await getMovieDetails(id);
-    this.setState({ movieData });
+    try {
+      const movieData = await getMovieDetails(id);
+      this.setState({ movieData });
+    } catch {
+      this.setState({ err: true });
+    } finally {
+      this.setState({ loading: false });
+    }
   };
 
   componentDidMount = () => {
+    this.setState({ loading: true });
     const { id } = this.props.match.params;
     this.getDetails(id);
-    console.log(id);
-    console.log(this.props);
+  };
+
+  resetError = () => {
+    this.setState({ err: false });
   };
 
   handleGoBack = () => {
     const { state } = this.props.location;
-  
     if (state) {
       this.props.history.push(state.from);
       return;
     }
-  
     this.props.history.push({
-      pathname: '/',
+      pathname: "/",
     });
   };
-  render() {
-    const {
-      poster_path: imageURL,
-      title,
-      release_date: release,
-      vote_average: vote,
-      overview,
-      genres,
-    } = this.state.movieData;
 
+  render() {
+    const { movieData, loading, err } = this.state;
     const { url, path } = this.props.match;
     const { state } = this.props.location;
-    console.log(state);
     return (
       <div>
-        <ButtonBack handleClick={this.handleGoBack} />
-        {title ? (
-          <DetailsBlockCSS>
-            <PosterCSS
-              src={`https://image.tmdb.org/t/p/w500/${imageURL}`}
-              alt={title}
-            />
-            <InfoBlockCSS>
-              <MovieTitleCSS>{`${title} (${release.slice(
-                0,
-                4
-              )})`}</MovieTitleCSS>
-              <ScoreCSS>User score: {vote}</ScoreCSS>
-              <SubcaptionCSS>Overview:</SubcaptionCSS>
-              <OverviewCSS>{overview}</OverviewCSS>
-              <SubcaptionCSS>Genres:</SubcaptionCSS>
-              <GenresListCSS>
-                {genres.map(({ id, name }) => (
-                  <ListItemCSS key={id}>{name}</ListItemCSS>
-                ))}
-              </GenresListCSS>
-            </InfoBlockCSS>
-          </DetailsBlockCSS>
-        ) : (
-          ""
+        {err && <ErrPage reset={this.resetError} {...this.props} />}
+        {loading && <Loading />}
+        {!loading && !err && (
+          <>
+            {" "}
+            {movieData.title && (
+              <>
+                <ButtonBack handleClick={this.handleGoBack} />
+                <Suspense fallback={<Loading />}>
+                  <DetailsPageMarkup movie={movieData} />
+                </Suspense>
+              </>
+            )}
+            <AddBlock url={url} state={state} />
+            <Suspense fallback={<Loading />}>
+              <Route path={`${path}/cast`} component={AsyncCast} />
+              <Route path={`${path}/reviews`} component={AsyncReviews} />
+            </Suspense>
+          </>
         )}
-        <AddBlockCSS>
-          <SubcaptionCSS>Additional Information</SubcaptionCSS>
-          <LinkCSS to={{ pathname: `${url}/cast`, state: state }}>Cast</LinkCSS>
-          <LinkCSS to={{ pathname: `${url}/reviews`, state: state }}>
-            Reviews
-          </LinkCSS>
-        </AddBlockCSS>
-        <Suspense fallback={<div>Loading...</div>}>
-          <Route path={`${path}/cast`} component={AsyncCast} />
-          <Route path={`${path}/reviews`} component={AsyncReviews} />
-        </Suspense>
       </div>
     );
   }

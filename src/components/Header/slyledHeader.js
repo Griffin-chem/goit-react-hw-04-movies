@@ -27,4 +27,12 @@ const LinkCSS = styled(Link)`
   }
 `;
 
-export { HeaderCSS, HeaderItemCSS, LinkCSS };
+const LogoCSS = styled.img`
+  height: 16px;
+  width: auto;
+  display: inline-block;
+  position: absolute;
+  right: 0;
+`;
+
+export { HeaderCSS, HeaderItemCSS, LinkCSS, LogoCSS };
